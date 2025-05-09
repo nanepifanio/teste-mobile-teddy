@@ -3,6 +3,7 @@
     "name": "Teste-Mobile-Teddy",
     "slug": "Teste-Mobile-Teddy",
     "version": "1.0.0",
+    "scheme": "Teste-Mobile-Teddy",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -24,6 +25,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["expo-router"]
   }
 }
