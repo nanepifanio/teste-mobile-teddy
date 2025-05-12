@@ -18,6 +18,7 @@ export default function WelcomeLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name='index' />
+      <Stack.Screen name='signup' />
     </Stack>
   );
 }

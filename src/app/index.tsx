@@ -1,7 +1,11 @@
-import { useState } from 'react';
-import Button from '../components/Button';
-import Input from '../components/Input';
 import { Link } from 'expo-router';
+import Input from '../components/Input';
+import { StyleSheet } from 'react-native';
+import Button from '../components/Button';
+import { Controller } from 'react-hook-form';
+import { Checkbox } from 'react-native-paper';
+import { useLoginForm } from '../hooks/useLoginForm';
+import { useRememberMeStore } from '../store/useRememberMeStore';
 import {
   StyledContainer,
   StyledText,
@@ -9,58 +13,81 @@ import {
   StyledTitle,
   StyledRememberMeView,
 } from './styles';
-import { Checkbox } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
 
 export default function WelcomeScreen() {
-  const [checked, setChecked] = useState(false);
-  const [usernameInputValue, setUsernameInputValue] = useState('');
-  const [passwordInputValue, setPasswordInputValue] = useState('');
+  const rememberMe = useRememberMeStore((s) => s.rememberMe);
+  const setRememberMe = useRememberMeStore((s) => s.setRememberMe);
 
-  function handleUsernameInput(value: string) {
-    setUsernameInputValue(value);
-  }
-
-  function handlePasswordInput(value: string) {
-    setPasswordInputValue(value);
-  }
-
-  function onButtonPress() {}
+  const {
+    control,
+    handleLogin,
+    formState: { errors },
+  } = useLoginForm(({ email, password }) => {
+    console.log({ email, password, rememberMe });
+  });
 
   return (
     <StyledContainer>
       <StyledTitle>Olá, seja bem-vindo!</StyledTitle>
-      <Input
-        value={usernameInputValue}
-        onChange={handleUsernameInput}
-        placeholder='Digite o seu E-mail'
-        label='E-mail'
-        style={styles.emailInput}
+      <Controller
+        control={control}
+        name='email'
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            value={value}
+            onChange={onChange}
+            placeholder='Digite o seu E-mail'
+            keyboardType='email-address'
+            label='E-mail'
+            style={styles.emailInput}
+            onBlur={onBlur}
+            autoCapitalize='none'
+            error={!!errors.email}
+            errorText={errors.email?.message?.toString() ?? null}
+          />
+        )}
       />
-      <Input
-        value={passwordInputValue}
-        onChange={handlePasswordInput}
-        placeholder='Digite a sua senha'
-        label='Senha'
-        style={styles.passwordInput}
-        allowShowPassword
+      <Controller
+        control={control}
+        name='password'
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            value={value}
+            onChange={onChange}
+            placeholder='Digite a sua senha'
+            label='Senha'
+            style={
+              !!errors.password
+                ? { ...styles.passwordInput, marginBottom: 0 }
+                : styles.passwordInput
+            }
+            allowShowPassword
+            onBlur={onBlur}
+            error={!!errors.password}
+            errorText={errors.password?.message?.toString() ?? null}
+          />
+        )}
       />
       <StyledView>
         <StyledRememberMeView>
           <Checkbox
-            status={checked ? 'checked' : 'unchecked'}
-            onPress={() => setChecked(!checked)}
+            status={rememberMe ? 'checked' : 'unchecked'}
+            onPress={() => setRememberMe(!rememberMe)}
             color='#ec6724'
             uncheckedColor='#000'
           />
           <StyledText>Lembre-me</StyledText>
         </StyledRememberMeView>
-        <Link href={'#'}>
+        <Link href={'#'} asChild>
           <StyledText style={styles.underline}>Esqueci minha senha</StyledText>
         </Link>
       </StyledView>
-      <Button onPress={onButtonPress} style={styles.button} />
-      <Link href={'#'}>
+      <Button
+        buttonText={'ENTRAR'}
+        onPress={handleLogin}
+        style={styles.button}
+      />
+      <Link href={'/signup'} asChild>
         <StyledText style={styles.underline}>
           Ainda não tem cadastro? Criar nova conta
         </StyledText>

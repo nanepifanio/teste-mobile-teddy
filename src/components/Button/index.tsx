@@ -1,16 +1,19 @@
+import { StyledButton, StyledText } from './styles';
 import {
   GestureResponderEvent,
   PressableStateCallbackType,
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import { StyledButton, StyledText } from './styles';
 
 type Props = {
   onPress: ((e: GestureResponderEvent) => void) | null | undefined;
   style?:
     | StyleProp<ViewStyle>
     | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>);
+  buttonText: string;
+  buttonTextColor?: string;
+  buttonTextSize?: number;
 };
 
 export default function Button(props: Props) {
@@ -19,7 +22,12 @@ export default function Button(props: Props) {
       onPress={(e) => props.onPress && props.onPress(e)}
       style={props.style}
     >
-      <StyledText>Entrar</StyledText>
+      <StyledText
+        buttonTextSize={props.buttonTextSize}
+        buttonTextColor={props.buttonTextColor}
+      >
+        {props.buttonText}
+      </StyledText>
     </StyledButton>
   );
 }
