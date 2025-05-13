@@ -1,4 +1,5 @@
-import { Stack } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   useFonts,
   Inter_400Regular,
@@ -18,11 +19,11 @@ export default function AuthLayout() {
 
   return (
     <>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name='index' />
-        <Stack.Screen name='signup' />
-        <Stack.Screen name='forgotpassword' />
-      </Stack>
+      <GestureHandlerRootView>
+        <Drawer screenOptions={{ headerShown: false }}>
+          <Drawer.Screen name='index' />
+        </Drawer>
+      </GestureHandlerRootView>
       <Toast />
     </>
   );
