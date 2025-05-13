@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import Input from '../components/Input';
 import { StyleSheet } from 'react-native';
 import Button from '../components/Button';
@@ -6,6 +6,8 @@ import { Controller } from 'react-hook-form';
 import { Checkbox } from 'react-native-paper';
 import { useLoginForm } from '../hooks/useLoginForm';
 import { useRememberMeStore } from '../store/useRememberMeStore';
+import { useUserDataStore } from '../store/useUserDataStore';
+import Toast from 'react-native-toast-message';
 import {
   StyledContainer,
   StyledText,
@@ -17,13 +19,19 @@ import {
 export default function WelcomeScreen() {
   const rememberMe = useRememberMeStore((s) => s.rememberMe);
   const setRememberMe = useRememberMeStore((s) => s.setRememberMe);
+  const storedEmail = useUserDataStore((s) => s.email);
+  const storedPassword = useUserDataStore((s) => s.password);
 
   const {
     control,
     handleLogin,
     formState: { errors },
   } = useLoginForm(({ email, password }) => {
-    console.log({ email, password, rememberMe });
+    if (storedEmail === email && storedPassword === password) {
+      router.replace('dashboard');
+    } else {
+      Toast.show({ type: 'error', text1: 'E-mail ou senha inválidos!' });
+    }
   });
 
   return (
@@ -78,7 +86,7 @@ export default function WelcomeScreen() {
           />
           <StyledText>Lembre-me</StyledText>
         </StyledRememberMeView>
-        <Link href={'#'} asChild>
+        <Link href={'/forgotpassword'} asChild>
           <StyledText style={styles.underline}>Esqueci minha senha</StyledText>
         </Link>
       </StyledView>
